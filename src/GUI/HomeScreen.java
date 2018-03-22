@@ -21,12 +21,12 @@ public class HomeScreen extends javax.swing.JFrame {
     private void initComponents() {
 
         btnProfile = new javax.swing.JButton();
-        btnMyorder = new javax.swing.JToggleButton();
         jLabel1 = new javax.swing.JLabel();
         cbbOptionToShow = new javax.swing.JComboBox<>();
         btnRefresh = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl1 = new javax.swing.JTable();
+        btnMyorder = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuFor = new javax.swing.JMenuItem();
@@ -40,13 +40,6 @@ public class HomeScreen extends javax.swing.JFrame {
         btnProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProfileActionPerformed(evt);
-            }
-        });
-
-        btnMyorder.setText("My order");
-        btnMyorder.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMyorderActionPerformed(evt);
             }
         });
 
@@ -97,6 +90,13 @@ public class HomeScreen extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tbl1);
 
+        btnMyorder.setText("My order");
+        btnMyorder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMyorderActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Post");
 
         menuFor.setText("For rent/For share");
@@ -127,17 +127,17 @@ public class HomeScreen extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnMyorder))
-                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(cbbOptionToShow, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(18, 18, 18)
+                                .addGap(18, 429, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnMyorder)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnProfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnRefresh, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)))
@@ -152,7 +152,7 @@ public class HomeScreen extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnMyorder))
+                    .addComponent(btnMyorder, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -176,11 +176,6 @@ public class HomeScreen extends javax.swing.JFrame {
         t.setVisible(true);
     }//GEN-LAST:event_menuRSActionPerformed
 
-    private void btnMyorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyorderActionPerformed
-        Myorder t = new Myorder(this, true,user);
-        t.setVisible(true);
-    }//GEN-LAST:event_btnMyorderActionPerformed
-
     private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
         Profile t = new Profile(this, true, user);
         t.setVisible(true);
@@ -198,6 +193,11 @@ public class HomeScreen extends javax.swing.JFrame {
     private void cbbOptionToShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbOptionToShowActionPerformed
         getAllPost();
     }//GEN-LAST:event_cbbOptionToShowActionPerformed
+
+    private void btnMyorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyorderActionPerformed
+        Myorder t = new Myorder(this, true,user);
+        t.setVisible(true);
+    }//GEN-LAST:event_btnMyorderActionPerformed
     private void getAllPost() {
         try {
             String filter = (String) cbbOptionToShow.getSelectedItem();
@@ -258,7 +258,7 @@ public class HomeScreen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton btnMyorder;
+    private javax.swing.JButton btnMyorder;
     private javax.swing.JButton btnProfile;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JComboBox<String> cbbOptionToShow;

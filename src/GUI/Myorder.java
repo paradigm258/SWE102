@@ -1,19 +1,27 @@
 package GUI;
 
+import java.awt.Frame;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 
 public class Myorder extends javax.swing.JDialog {
-
+    Model.User user;
     javax.swing.table.DefaultTableModel tbm;
     public Myorder(java.awt.Frame parent, boolean modal,Model.User user) {
         super(parent, modal);
         initComponents();
         tbm = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+        this.user = user;
+        display();
+    }
+    void display(){
+        tbm.setRowCount(0);
         java.util.List<Object[]> rows = DBUlti.Dao.getUserPosts(user);
         for(Object[] singleRow:rows){
             tbm.addRow(singleRow);
         }
     }
-
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -48,6 +56,11 @@ public class Myorder extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(2).setResizable(false);
@@ -80,6 +93,48 @@ public class Myorder extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        int id = (Integer)tbm.getValueAt(jTable1.getSelectedRow(),0);
+        DetailOrder d = new DetailOrder(null, rootPaneCheckingEnabled, id);
+        d.setVisible(true);
+        d.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                display();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                
+            }
+        });
+    }//GEN-LAST:event_jTable1MouseClicked
 
     
     

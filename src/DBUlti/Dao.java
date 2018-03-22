@@ -69,6 +69,7 @@ public class Dao {
                 singleRow[0] = rs.getInt("id");
                 singleRow[1] = rs.getString("from");
                 singleRow[2] = rs.getString("to");
+                singleRow[3] = rs.getString("type");
                 singleRow[5] = rs.getDate("time");
                 singleRow[6] = rs.getFloat("price");
                 rows.add(singleRow);
@@ -77,5 +78,29 @@ public class Dao {
             return rows;
         }
         return rows;
+    }
+
+    public static java.sql.ResultSet getBooking(int id) throws Exception {
+        java.sql.Connection connection = DBUlti.DBConnect.getConnection();
+        String sql = "select "
+                + "trip_id,users.name,phone "
+                + "from bookings left join users on passenger_id = users.id "
+                + "where trip_id=?";
+        java.sql.PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        return ps.executeQuery();
+    }
+    
+    public static boolean deletePost(int id) throws Exception{
+        java.sql.Connection connection = DBConnect.getConnection();
+        String sql = "delete from bookings where trip_id=?";
+        java.sql.PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.execute();
+        sql = "delete from trips where id=?";
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.execute();
+        return true;
     }
 }

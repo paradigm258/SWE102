@@ -166,12 +166,12 @@ public class ForShare extends javax.swing.JDialog {
         trip.setType(type);
         trip.setFrom(txtLocation.getText());
         trip.setTo(txtDes.getText());
-        trip.setPrice(Float.parseFloat(txtPrice.getText()));
         trip.setDescription(txtDetail.getText());
         try {
-            trip.setTime(new java.text.SimpleDateFormat("yyyy-MM-dd").parse(txtTime.getText()));
-        } catch (ParseException ex) {
-            Logger.getLogger(ForShare.class.getName()).log(Level.SEVERE, null, ex);
+            trip.setPrice(Float.parseFloat(txtPrice.getText()));
+            trip.setTime(new java.text.SimpleDateFormat("dd/MM/yyyy").parse(txtTime.getText()));
+        } catch (ParseException|NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Please correct field");
         }
         if(type.equals("For Share")){
             

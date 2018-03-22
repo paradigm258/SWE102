@@ -1,12 +1,33 @@
 package GUI;
 
+import DBUlti.Dao;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
+
 
 public class DetailOrder extends javax.swing.JDialog {
 
-    
-    public DetailOrder(java.awt.Frame parent, boolean modal) {
+    int id;
+    javax.swing.table.DefaultTableModel tbm;
+    public DetailOrder(java.awt.Frame parent, boolean modal, int id) {
         super(parent, modal);
         initComponents();
+        this.id = id;
+        tbm = (javax.swing.table.DefaultTableModel)jTable1.getModel();
+        try{
+            java.sql.ResultSet rs = Dao.getBooking(id);
+            while(rs.next()){
+                Object[] row = new Object[4];
+                row[0]=rs.getString("name");
+                row[1]=
+                row[2]=rs.getString("phone");
+                tbm.addRow(row);
+            }
+        }catch(Exception e){
+            
+        }
     }
 
     
@@ -49,6 +70,11 @@ public class DetailOrder extends javax.swing.JDialog {
         btnSave.setText("Save");
 
         btnDelete.setText("Delete this post");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -85,6 +111,15 @@ public class DetailOrder extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            Dao.deletePost(id);
+        } catch (Exception ex) {
+            Logger.getLogger(DetailOrder.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.dispose();
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     
     
