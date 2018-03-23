@@ -47,7 +47,7 @@ public class Authentication {
         PreparedStatement ps = connection.prepareStatement("select * from users where email=?");
         ps.setString(1, user.getEmail());
         if(ps.executeQuery().next())return false;
-        ps = connection.prepareStatement("insert into users values(?,?,?,?,?,?,?,?,?,?)"); 
+        ps = connection.prepareStatement("insert into users values(?,?,?,?,?,?,?,?,?)"); 
         ps.setString(1, user.getName());
         ps.setString(2,user.getAvatar());
         ps.setString(3, user.getEmail());
@@ -55,10 +55,9 @@ public class Authentication {
         ps.setString(5, user.getBrand());
         ps.setString(6, user.getPlate());
         ps.setString(7, user.getPassword());
-        ps.setString(8, user.getToken());
         java.sql.Date create = new java.sql.Date(user.getCreate_at().getTime());
+        ps.setDate(8, create);
         ps.setDate(9, create);
-        ps.setDate(10, create);
         ps.executeUpdate();
         return true;
     }

@@ -172,6 +172,7 @@ public class ForShare extends javax.swing.JDialog {
             trip.setTime(new java.text.SimpleDateFormat("dd/MM/yyyy").parse(txtTime.getText()));
         } catch (ParseException|NumberFormatException ex) {
             javax.swing.JOptionPane.showMessageDialog(this, "Please correct field");
+            return;
         }
         if(type.equals("For Share")){
             
@@ -184,8 +185,10 @@ public class ForShare extends javax.swing.JDialog {
         try {
             Dao.postToDataBase(trip);
         } catch (Exception ex) {
-            Logger.getLogger(Share_Rent.class.getName()).log(Level.SEVERE, null, ex);
+            javax.swing.JOptionPane.showMessageDialog(this, "Post failed");
+            return;
         }
+        this.dispose();
     }//GEN-LAST:event_btnCreateActionPerformed
 
     /**

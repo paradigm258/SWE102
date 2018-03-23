@@ -124,7 +124,7 @@ public class Login extends javax.swing.JFrame {
 
         try {
             String email = txtEmail.getText();
-            String password = txtPassword.getText();
+            String password =new  String(txtPassword.getPassword());
             DBUlti.Authentication au = new DBUlti.Authentication();
             java.sql.ResultSet rs = au.Login(email, password);
             if (rs.next()) {

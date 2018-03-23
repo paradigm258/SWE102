@@ -1,5 +1,8 @@
 package GUI;
 
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.sql.SQLException;
 
 
@@ -187,7 +190,7 @@ public class HomeScreen extends javax.swing.JFrame {
 
     private void tbl1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl1MouseClicked
         int id = (Integer)tbm.getValueAt(tbl1.getSelectedRow(), 0);
-        
+        (new BeforeRequest(this, rootPaneCheckingEnabled,user,id)).setVisible(true);
     }//GEN-LAST:event_tbl1MouseClicked
 
     private void cbbOptionToShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbOptionToShowActionPerformed
@@ -196,6 +199,42 @@ public class HomeScreen extends javax.swing.JFrame {
 
     private void btnMyorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyorderActionPerformed
         Myorder t = new Myorder(this, true,user);
+        t.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                getAllPost();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                
+            }
+        });
         t.setVisible(true);
     }//GEN-LAST:event_btnMyorderActionPerformed
     private void getAllPost() {

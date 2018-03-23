@@ -1,5 +1,8 @@
 package GUI;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 
 /**
@@ -30,6 +33,7 @@ public class Profile extends javax.swing.JDialog {
         txtPhone.setText(user.getPhone());
         txtPassword.setText(user.getPassword());
         txtBrand.setText(user.getBrand());
+        txtLicense.setText(user.getPlate());
     }
     void setEditUserInfo(boolean mode)
     {
@@ -353,6 +357,20 @@ public class Profile extends javax.swing.JDialog {
     private void saveEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveEditActionPerformed
         // TODO add your handling code here:
         changeBtnStatus();
+        user.setEmail(txtEmail.getText());
+        user.setName(txtName.getText());
+        user.setPhone(txtPhone.getText());
+        user.setPassword(new String(txtPassword.getPassword()));
+        user.setPlate(txtLicense.getText());
+        user.setBrand(txtBrand.getText());
+        try {
+            if(!DBUlti.Dao.changeUserData(user)){
+                throw new Exception();
+            }
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(parent, "Unable to change profile data");
+            ex.printStackTrace();
+        }
     }//GEN-LAST:event_saveEditActionPerformed
 
     private void cancelEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelEditActionPerformed

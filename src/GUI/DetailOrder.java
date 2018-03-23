@@ -19,10 +19,11 @@ public class DetailOrder extends javax.swing.JDialog {
         try{
             java.sql.ResultSet rs = Dao.getBooking(id);
             while(rs.next()){
-                Object[] row = new Object[4];
+                Object[] row = new Object[5];
                 row[0]=rs.getString("name");
-                row[1]=
-                row[2]=rs.getString("phone");
+                row[1]=rs.getString("pickup");
+                row[2]=rs.getString("dropoff");
+                row[3]=rs.getString("phone");
                 tbm.addRow(row);
             }
         }catch(Exception e){
@@ -48,11 +49,11 @@ public class DetailOrder extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Custom/Provider", "Detail", "Phone", "Accept"
+                "Custom/Provider", "Detail", "Dropoff", "Phone", "Accept"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -61,7 +62,7 @@ public class DetailOrder extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
         }
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N

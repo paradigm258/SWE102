@@ -187,7 +187,6 @@ public class SignUp extends javax.swing.JFrame {
         user.setBrand("No brand");
         user.setPlate("No plate");
         user.setPassword(txtPassword.getText());
-        user.setToken("a");
         user.setCreate_at(new java.util.Date());
         user.setUpdate_at(new java.util.Date());
         try {

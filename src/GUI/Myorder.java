@@ -1,6 +1,5 @@
 package GUI;
 
-import java.awt.Frame;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -18,9 +17,9 @@ public class Myorder extends javax.swing.JDialog {
     void display(){
         tbm.setRowCount(0);
         java.util.List<Object[]> rows = DBUlti.Dao.getUserPosts(user);
-        for(Object[] singleRow:rows){
+        rows.forEach((singleRow) -> {
             tbm.addRow(singleRow);
-        }
+        });
     }
     
     @SuppressWarnings("unchecked")
