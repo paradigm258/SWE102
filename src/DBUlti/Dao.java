@@ -49,10 +49,34 @@ public class Dao {
         ps.setInt(2, book.getTrip_id());
         ps.execute();
         sql = "insert into notifications values(?,?)";
-        System.out.println(sql);
         ps = connection.prepareStatement(sql);
         ps.setInt(1, book.getBooker().getId());
-        ps.setString(2, trip.getType()+" from "+trip.getFrom()+" to "+trip.getTo()+"\nAccepted\nDescription:"+trip.getDescription());
+        ps.setString(2, trip.getType() + " from " + trip.getFrom() + " to " + trip.getTo() + "\nAccepted\nDescription:" + trip.getDescription());
+        ps.execute();
+    }
+
+    public static void refuse(int id) throws Exception {
+        Connection connection = DBConnect.getConnection();
+        String sql = "select * from bookings where id =? ";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        Model.Booking book = new Booking();
+        if (rs.next()) {
+            book.setBooker(getUserData(rs.getInt("booker_id")));
+            book.setTrip_id(rs.getInt("trip_id"));
+        } else {
+            throw new Exception();
+        }
+        sql = "delete from bookings where id=?";
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.execute();
+        Model.Trip trip = getTrip(book.getTrip_id());
+        sql = "insert into notifications values(?,?)";
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, book.getBooker().getId());
+        ps.setString(2, trip.getType() + " from " + trip.getFrom() + " to " + trip.getTo() + "\nRefused\nDescription:" + trip.getDescription());
         ps.execute();
     }
 
@@ -187,6 +211,8 @@ public class Dao {
             trip.setPassangerId(rs.getInt("passenger_id"));
             trip.setFrom(rs.getString("from"));
             trip.setTo(rs.getString("to"));
+            trip.setType(rs.getString("type"));
+            trip.setDescription(rs.getString("description"));
             return trip;
         }
         return null;
@@ -214,7 +240,7 @@ public class Dao {
                 ps = connection.prepareStatement(sql);
                 ps.setInt(1, rs.getInt("id"));
                 ResultSet rs2 = ps.executeQuery();
-                singleRow[4] = (rs2.next()?rs2.getInt(1):0);
+                singleRow[4] = (rs2.next() ? rs2.getInt(1) : 0);
                 singleRow[3] = rs.getString("type");
                 singleRow[5] = rs.getDate("time");
                 singleRow[6] = rs.getFloat("price");
@@ -260,34 +286,35 @@ public class Dao {
         ps.setInt(2, id);
         ResultSet rs = ps.executeQuery();
         System.out.println(id);
-        while(rs.next()){
+        while (rs.next()) {
             System.out.println("i");
             Object[] trip = new Object[6];
-            trip[0]=rs.getInt(1);
-            int customer = rs.getInt(2)==id?rs.getInt(3):rs.getInt(2);
-            trip[1]=getUserData(customer).getName();
-            trip[2]=rs.getString(4);
-            trip[3]=rs.getString(5);
-            trip[4]=rs.getString(6);
-            trip[5]=new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date(rs.getDate(7).getTime()));
+            trip[0] = rs.getInt(1);
+            int customer = rs.getInt(2) == id ? rs.getInt(3) : rs.getInt(2);
+            trip[1] = getUserData(customer).getName();
+            trip[2] = rs.getString(4);
+            trip[3] = rs.getString(5);
+            trip[4] = rs.getString(6);
+            trip[5] = new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date(rs.getDate(7).getTime()));
             list.add(trip);
         }
         return list;
     }
-    
-    public static List<String> getNotifications(int id) throws Exception{
+
+    public static List<String> getNotifications(int id) throws Exception {
         List<String> list = new ArrayList<>();
         String sql = "select * from notifications where user_id=?";
         Connection connection = DBConnect.getConnection();
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setInt(1, id);
         ResultSet rs = ps.executeQuery();
-        while(rs.next()){
+        while (rs.next()) {
             list.add(rs.getString(2));
         }
         return list;
     }
-    public static void deleteNotification(int id) throws Exception{
+
+    public static void deleteNotification(int id) throws Exception {
         String sql = "delete from notifications where user_id=?";
         Connection connection = DBConnect.getConnection();
         PreparedStatement ps = connection.prepareStatement(sql);
@@ -295,4 +322,3 @@ public class Dao {
         ps.execute();
     }
 }
-

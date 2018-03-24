@@ -20,6 +20,9 @@ public class History extends javax.swing.JDialog {
     javax.swing.table.DefaultTableModel tbm;
     /**
      * Creates new form History
+     * @param parent
+     * @param modal
+     * @param user
      */
     public History(javax.swing.JDialog parent, boolean modal,Model.User user) {
         super(parent, modal);
@@ -28,7 +31,7 @@ public class History extends javax.swing.JDialog {
         tbm = (javax.swing.table.DefaultTableModel)jTable1.getModel();
         printTable();
     }
-    void printTable(){
+    private void printTable(){
         try {
             List<Object[]> list = DBUlti.Dao.getUserHistory(user.getId());
             list.forEach((trip)->{

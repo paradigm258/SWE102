@@ -17,20 +17,7 @@ public class DetailOrder extends javax.swing.JDialog {
         initComponents();
         this.id = id;
         tbm = (javax.swing.table.DefaultTableModel)jTable1.getModel();
-        try{
-            java.sql.ResultSet rs = Dao.getBooking(id);
-            while(rs.next()){
-                Object[] row = new Object[5];
-                row[0]=rs.getInt("id");
-                row[1]=rs.getString("name");
-                row[2]=rs.getString("pickup");
-                row[3]=rs.getString("dropoff");
-                row[4]=rs.getString("phone");
-                tbm.addRow(row);
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        printTable();
     }
 
     
@@ -119,7 +106,23 @@ public class DetailOrder extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    private void printTable(){
+        try{
+            tbm.setRowCount(0);
+            java.sql.ResultSet rs = Dao.getBooking(id);
+            while(rs.next()){
+                Object[] row = new Object[5];
+                row[0]=rs.getInt("id");
+                row[1]=rs.getString("name");
+                row[2]=rs.getString("pickup");
+                row[3]=rs.getString("dropoff");
+                row[4]=rs.getString("phone");
+                tbm.addRow(row);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
             Dao.deletePost(id);
@@ -138,7 +141,14 @@ public class DetailOrder extends javax.swing.JDialog {
             } catch (Exception ex) {
                 Logger.getLogger(DetailOrder.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }else if(choice==1){
+            try{
+                DBUlti.Dao.refuse(id);
+            }catch(Exception e){
+                
+            }
         }
+        printTable();
     }//GEN-LAST:event_jTable1MouseClicked
 
     
