@@ -3,6 +3,7 @@ package GUI;
 import DBUlti.Dao;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 
@@ -20,14 +21,15 @@ public class DetailOrder extends javax.swing.JDialog {
             java.sql.ResultSet rs = Dao.getBooking(id);
             while(rs.next()){
                 Object[] row = new Object[5];
-                row[0]=rs.getString("name");
-                row[1]=rs.getString("pickup");
-                row[2]=rs.getString("dropoff");
-                row[3]=rs.getString("phone");
+                row[0]=rs.getInt("id");
+                row[1]=rs.getString("name");
+                row[2]=rs.getString("pickup");
+                row[3]=rs.getString("dropoff");
+                row[4]=rs.getString("phone");
                 tbm.addRow(row);
             }
         }catch(Exception e){
-            
+            e.printStackTrace();
         }
     }
 
@@ -39,7 +41,6 @@ public class DetailOrder extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
-        btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -49,26 +50,36 @@ public class DetailOrder extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Custom/Provider", "Detail", "Dropoff", "Phone", "Accept"
+                "#", "Custom/Provider", "Pickup", "Dropoff", "Phone"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
             }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
         });
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(4).setResizable(false);
         }
 
         jLabel1.setFont(new java.awt.Font("Verdana", 1, 18)); // NOI18N
         jLabel1.setText("Detail Order");
-
-        btnSave.setText("Save");
 
         btnDelete.setText("Delete this post");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -92,8 +103,6 @@ public class DetailOrder extends javax.swing.JDialog {
                 .addContainerGap(43, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addGap(45, 45, 45)
                 .addComponent(btnDelete)
                 .addGap(54, 54, 54))
         );
@@ -104,9 +113,7 @@ public class DetailOrder extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSave)
-                    .addComponent(btnDelete))
+                .addComponent(btnDelete)
                 .addGap(12, 12, 12))
         );
 
@@ -122,12 +129,23 @@ public class DetailOrder extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        int id = (Integer)tbm.getValueAt(jTable1.getSelectedRow(), 0);
+        int choice = JOptionPane.showConfirmDialog(rootPane, "Accept this request");
+        if(choice==0){
+            try {
+                DBUlti.Dao.accept(id);
+            } catch (Exception ex) {
+                Logger.getLogger(DetailOrder.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
     
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

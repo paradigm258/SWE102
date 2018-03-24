@@ -120,7 +120,7 @@ public class Myorder extends javax.swing.JDialog {
 
             @Override
             public void windowDeiconified(WindowEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                
             }
 
             @Override

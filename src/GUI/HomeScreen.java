@@ -189,7 +189,9 @@ public class HomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void tbl1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl1MouseClicked
-        int id = (Integer)tbm.getValueAt(tbl1.getSelectedRow(), 0);
+        int selected = tbl1.getSelectedRow();
+        if((Boolean)tbm.getValueAt(selected, 6))return;
+        int id = (Integer)tbm.getValueAt(selected, 0);
         (new BeforeRequest(this, rootPaneCheckingEnabled,user,id)).setVisible(true);
     }//GEN-LAST:event_tbl1MouseClicked
 
@@ -239,17 +241,16 @@ public class HomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnMyorderActionPerformed
     private void getAllPost() {
         try {
+            tbm.setRowCount(0);
             String filter = (String) cbbOptionToShow.getSelectedItem();
             java.sql.ResultSet rs;
             if(filter.equals("All post")){
-                rs=connection.createStatement().executeQuery("select * from trips");
+                rs=connection.createStatement().executeQuery("select * from trips where status=0");
             }else{
-                java.sql.PreparedStatement ps = connection.prepareStatement("select * from trips where type=?");
+                java.sql.PreparedStatement ps = connection.prepareStatement("select * from trips where type=? and status=0");
                 ps.setString(1, filter);
                 rs = ps.executeQuery();
             }
-            
-            tbm.setRowCount(0);
             while(rs.next()){
                 Object a[] = new Object[7];
                 a[0] = rs.getInt("id");

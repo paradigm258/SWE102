@@ -125,10 +125,8 @@ public class Login extends javax.swing.JFrame {
         try {
             String email = txtEmail.getText();
             String password =new  String(txtPassword.getPassword());
-            DBUlti.Authentication au = new DBUlti.Authentication();
-            java.sql.ResultSet rs = au.Login(email, password);
-            if (rs.next()) {
-                Model.User user = DBUlti.Dao.getUserData(rs);
+            Model.User user = DBUlti.Dao.Login(email, password);
+            if (user!=null) {
                 HomeScreen t = new HomeScreen(user);
                 t.setVisible(true);
                 this.dispose();

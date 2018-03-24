@@ -346,7 +346,7 @@ public class Profile extends javax.swing.JDialog {
     }//GEN-LAST:event_btnChangeAvatarActionPerformed
 
     private void btnHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHistoryActionPerformed
-        History t = new History(this, true);
+        History t = new History(this, true,user);
         t.setVisible(true);
     }//GEN-LAST:event_btnHistoryActionPerformed
 

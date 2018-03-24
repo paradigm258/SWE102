@@ -190,8 +190,8 @@ public class SignUp extends javax.swing.JFrame {
         user.setCreate_at(new java.util.Date());
         user.setUpdate_at(new java.util.Date());
         try {
-            DBUlti.Authentication au = new DBUlti.Authentication();
-            if (au.Register(user)) {
+
+            if (DBUlti.Dao.Register(user)) {
                 Login t = new Login();
                 t.setVisible(true);
                 this.dispose();

@@ -5,13 +5,49 @@
  */
 package DBUlti;
 
+import Model.Booking;
+import Model.Trip;
+import Model.User;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author Think
  */
 public class Dao {
+
+    public static void accept(int id) throws Exception {
+        Connection connection = DBConnect.getConnection();
+        String sql = "select * from bookings where id =? ";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        Model.Booking book = new Booking();
+        if (rs.next()) {
+            book.setBooker(getUserData(rs.getInt("booker_id")));
+            book.setTrip_id(rs.getInt("trip_id"));
+        } else {
+            throw new Exception();
+        }
+        sql = "delete from bookings where trip_id=?";
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, book.getTrip_id());
+        ps.execute();
+        String update;
+        Model.Trip trip = getTrip(book.getTrip_id());
+        if (trip.getDriverId() == null) {
+            update = "driver_id";
+        } else {
+            update = "passenger_id";
+        }
+        sql = "update trips set " + update + "=?,status=1 where id=?";
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, book.getBooker().getId());
+        ps.setInt(2, book.getTrip_id());
+        ps.execute();
+    }
 
     public static void request(Model.Booking booking) throws Exception {
         Connection connection = DBConnect.getConnection();
@@ -25,6 +61,29 @@ public class Dao {
         ps.setString(5, booking.getPickup());
         ps.setString(6, booking.getDropoff());
         ps.execute();
+    }
+
+    public static Model.User getUserData(int id) throws Exception {
+        java.sql.Connection connnection = DBConnect.getConnection();
+        String sql = "select * from users where id=?";
+        PreparedStatement ps = connnection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            Model.User user = new Model.User();
+            user.setId(rs.getInt(1));
+            user.setName(rs.getString(2));
+            user.setAvatar(rs.getString(3));
+            user.setEmail(rs.getString(4));
+            user.setPhone(rs.getString(5));
+            user.setBrand(rs.getString("brand"));
+            user.setPlate(rs.getString("plate"));
+            user.setPassword(rs.getString("password"));
+            return user;
+        } else {
+            return null;
+        }
     }
 
     public static boolean changeUserData(Model.User user) throws Exception {
@@ -43,17 +102,39 @@ public class Dao {
         return true;
     }
 
-    public static Model.User getUserData(java.sql.ResultSet rs) throws SQLException {
-        Model.User user = new Model.User();
-        user.setId(rs.getInt(1));
-        user.setName(rs.getString(2));
-        user.setAvatar(rs.getString(3));
-        user.setEmail(rs.getString(4));
-        user.setPhone(rs.getString(5));
-        user.setBrand(rs.getString("brand"));
-        user.setPlate(rs.getString("plate"));
-        user.setPassword(rs.getString("password"));
-        return user;
+    public static User Login(String email, String password) throws Exception {
+        Connection connection = DBConnect.getConnection();;
+        PreparedStatement ps = connection.prepareStatement("select * from users where email = ? and password = ?");
+        ps.setString(1, email);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return getUserData(rs.getInt("id"));
+        } else {
+            return null;
+        }
+    }
+
+    public static boolean Register(User user) throws SQLException, Exception {
+        Connection connection = DBConnect.getConnection();
+        PreparedStatement ps = connection.prepareStatement("select * from users where email=?");
+        ps.setString(1, user.getEmail());
+        if (ps.executeQuery().next()) {
+            return false;
+        }
+        ps = connection.prepareStatement("insert into users values(?,?,?,?,?,?,?,?,?)");
+        ps.setString(1, user.getName());
+        ps.setString(2, user.getAvatar());
+        ps.setString(3, user.getEmail());
+        ps.setString(4, user.getPhone());
+        ps.setString(5, user.getBrand());
+        ps.setString(6, user.getPlate());
+        ps.setString(7, user.getPassword());
+        java.sql.Date create = new java.sql.Date(user.getCreate_at().getTime());
+        ps.setDate(8, create);
+        ps.setDate(9, create);
+        ps.executeUpdate();
+        return true;
     }
 
     public static boolean postToDataBase(Model.Trip post) throws Exception {
@@ -87,25 +168,53 @@ public class Dao {
         return true;
     }
 
+    public static Model.Trip getTrip(int id) throws Exception {
+        String update = "select * from trips where id=?";
+        java.sql.PreparedStatement ps = DBUlti.DBConnect.getConnection().prepareStatement(update);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            Model.Trip trip = new Trip();
+            trip.setTripId(rs.getInt("id"));
+            trip.setDriverId(rs.getInt("driver_id"));
+            trip.setPassangerId(rs.getInt("passenger_id"));
+            trip.setFrom(rs.getString("from"));
+            trip.setTo(rs.getString("to"));
+            return trip;
+        }
+        return null;
+    }
+
     public static java.util.List<Object[]> getUserPosts(Model.User user) {
         java.util.List<Object[]> rows = new java.util.ArrayList<>();
         try {
-            String sql = "select * from trips where driver_id=? or passenger_id=?";
-            java.sql.PreparedStatement ps = DBConnect.getConnection().prepareStatement(sql);
+            String sql = "select * from trips where driver_id=? or passenger_id=? and status=0";
+            Connection connection = DBConnect.getConnection();
+            java.sql.PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, user.getId());
             ps.setInt(2, user.getId());
+
             java.sql.ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Object[] singleRow = new Object[7];
                 singleRow[0] = rs.getInt("id");
                 singleRow[1] = rs.getString("from");
                 singleRow[2] = rs.getString("to");
+                sql = "select count(booker_id) as total\n"
+                        + "from bookings \n"
+                        + "where trip_id=?\n"
+                        + "group by bookings.booker_id";
+                ps = connection.prepareStatement(sql);
+                ps.setInt(1, rs.getInt("id"));
+                ResultSet rs2 = ps.executeQuery();
+                singleRow[4] = (rs2.next()?rs2.getInt(1):0);
                 singleRow[3] = rs.getString("type");
                 singleRow[5] = rs.getDate("time");
                 singleRow[6] = rs.getFloat("price");
                 rows.add(singleRow);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             return rows;
         }
         return rows;
@@ -113,8 +222,8 @@ public class Dao {
 
     public static java.sql.ResultSet getBooking(int id) throws Exception {
         java.sql.Connection connection = DBUlti.DBConnect.getConnection();
-        String sql = "select users.id,name,pickup,dropoff,phone from bookings \n"
-                + "left join users on booker_id=id \n"
+        String sql = "select bookings.id,name,pickup,dropoff,phone from bookings \n"
+                + "left join users on booker_id=users.id \n"
                 + "left join trips on trip_id = trips.id\n"
                 + "where trip_id=?";
         java.sql.PreparedStatement ps = connection.prepareStatement(sql);
@@ -133,5 +242,11 @@ public class Dao {
         ps.setInt(1, id);
         ps.execute();
         return true;
+    }
+
+    public static List<Model.Trip> getUserHistory(int id) {
+        List<Model.Trip> list = new ArrayList<>();
+        String sql = "select * from trips where passenger_id=? or driver_id=?";
+        return null;
     }
 }

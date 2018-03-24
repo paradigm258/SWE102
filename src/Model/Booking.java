@@ -22,6 +22,9 @@ public class Booking {
         this.dropoff = dropoff;
     }
 
+    public Booking() {
+    }
+
     
 
     
