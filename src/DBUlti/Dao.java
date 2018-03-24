@@ -9,6 +9,7 @@ import Model.Booking;
 import Model.Trip;
 import Model.User;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,12 @@ public class Dao {
         ps = connection.prepareStatement(sql);
         ps.setInt(1, book.getBooker().getId());
         ps.setInt(2, book.getTrip_id());
+        ps.execute();
+        sql = "insert into notifications values(?,?)";
+        System.out.println(sql);
+        ps = connection.prepareStatement(sql);
+        ps.setInt(1, book.getBooker().getId());
+        ps.setString(2, trip.getType()+" from "+trip.getFrom()+" to "+trip.getTo()+"\nAccepted\nDescription:"+trip.getDescription());
         ps.execute();
     }
 
@@ -188,7 +195,7 @@ public class Dao {
     public static java.util.List<Object[]> getUserPosts(Model.User user) {
         java.util.List<Object[]> rows = new java.util.ArrayList<>();
         try {
-            String sql = "select * from trips where driver_id=? or passenger_id=? and status=0";
+            String sql = "select * from trips where (driver_id=? or passenger_id=?) and status=0";
             Connection connection = DBConnect.getConnection();
             java.sql.PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, user.getId());
@@ -244,9 +251,48 @@ public class Dao {
         return true;
     }
 
-    public static List<Model.Trip> getUserHistory(int id) {
-        List<Model.Trip> list = new ArrayList<>();
-        String sql = "select * from trips where passenger_id=? or driver_id=?";
-        return null;
+    public static List<Object[]> getUserHistory(int id) throws Exception {
+        List<Object[]> list = new ArrayList<>();
+        String sql = "select * from trips where passenger_id=? or driver_id=? and status=1";
+        Connection connection = DBConnect.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.setInt(2, id);
+        ResultSet rs = ps.executeQuery();
+        System.out.println(id);
+        while(rs.next()){
+            System.out.println("i");
+            Object[] trip = new Object[6];
+            trip[0]=rs.getInt(1);
+            int customer = rs.getInt(2)==id?rs.getInt(3):rs.getInt(2);
+            trip[1]=getUserData(customer).getName();
+            trip[2]=rs.getString(4);
+            trip[3]=rs.getString(5);
+            trip[4]=rs.getString(6);
+            trip[5]=new SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date(rs.getDate(7).getTime()));
+            list.add(trip);
+        }
+        return list;
+    }
+    
+    public static List<String> getNotifications(int id) throws Exception{
+        List<String> list = new ArrayList<>();
+        String sql = "select * from notifications where user_id=?";
+        Connection connection = DBConnect.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            list.add(rs.getString(2));
+        }
+        return list;
+    }
+    public static void deleteNotification(int id) throws Exception{
+        String sql = "delete from notifications where user_id=?";
+        Connection connection = DBConnect.getConnection();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.execute();
     }
 }
+

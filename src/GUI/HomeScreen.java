@@ -2,8 +2,11 @@ package GUI;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 
 public class HomeScreen extends javax.swing.JFrame {
@@ -11,12 +14,14 @@ public class HomeScreen extends javax.swing.JFrame {
     Model.User user;
     java.sql.Connection connection;
     javax.swing.table.DefaultTableModel tbm;
+    List<String> notis;
     public HomeScreen(Model.User user) throws Exception {
         initComponents();
         tbm = (javax.swing.table.DefaultTableModel)tbl1.getModel();
         this.user = user;
         connection = DBUlti.DBConnect.getConnection();
         getAllPost();
+        getNotis();
     }
 
     @SuppressWarnings("unchecked")
@@ -30,6 +35,7 @@ public class HomeScreen extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl1 = new javax.swing.JTable();
         btnMyorder = new javax.swing.JButton();
+        btnNotification = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuFor = new javax.swing.JMenuItem();
@@ -100,6 +106,13 @@ public class HomeScreen extends javax.swing.JFrame {
             }
         });
 
+        btnNotification.setText("Notification");
+        btnNotification.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNotificationActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("Post");
 
         menuFor.setText("For rent/For share");
@@ -139,6 +152,8 @@ public class HomeScreen extends javax.swing.JFrame {
                                 .addGap(18, 429, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnNotification)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnMyorder)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -155,7 +170,8 @@ public class HomeScreen extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnProfile, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnMyorder, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnMyorder, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNotification))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,6 +201,7 @@ public class HomeScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_btnProfileActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+        getNotis();
         getAllPost();
     }//GEN-LAST:event_btnRefreshActionPerformed
 
@@ -198,7 +215,22 @@ public class HomeScreen extends javax.swing.JFrame {
     private void cbbOptionToShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbOptionToShowActionPerformed
         getAllPost();
     }//GEN-LAST:event_cbbOptionToShowActionPerformed
-
+    private void getNotis(){
+        try {
+            notis = DBUlti.Dao.getNotifications(user.getId());
+            btnNotification.setText("Notification("+notis.size()+")");
+        } catch (Exception ex) {
+            Logger.getLogger(HomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private void showNotification() throws Exception{
+        if(notis.size()==0)JOptionPane.showMessageDialog(rootPane, "No notification");
+        notis.forEach((message)->{
+            JOptionPane.showMessageDialog(rootPane, message, "Notification", JOptionPane.PLAIN_MESSAGE);
+        });
+        DBUlti.Dao.deleteNotification(user.getId());
+        getNotis();
+    }
     private void btnMyorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMyorderActionPerformed
         Myorder t = new Myorder(this, true,user);
         t.addWindowListener(new WindowListener() {
@@ -239,6 +271,14 @@ public class HomeScreen extends javax.swing.JFrame {
         });
         t.setVisible(true);
     }//GEN-LAST:event_btnMyorderActionPerformed
+
+    private void btnNotificationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNotificationActionPerformed
+        try {
+            showNotification();
+        } catch (Exception ex) {
+            Logger.getLogger(HomeScreen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnNotificationActionPerformed
     private void getAllPost() {
         try {
             tbm.setRowCount(0);
@@ -299,6 +339,7 @@ public class HomeScreen extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMyorder;
+    private javax.swing.JButton btnNotification;
     private javax.swing.JButton btnProfile;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JComboBox<String> cbbOptionToShow;
