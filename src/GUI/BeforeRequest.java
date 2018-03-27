@@ -108,6 +108,7 @@ public class BeforeRequest extends javax.swing.JDialog {
         } catch (Exception ex) {
             Logger.getLogger(BeforeRequest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.dispose();
     }//GEN-LAST:event_btnRequestActionPerformed
 
     /**
