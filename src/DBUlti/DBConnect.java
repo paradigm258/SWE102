@@ -23,7 +23,7 @@ public class DBConnect {
         Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         return DriverManager.getConnection(url,userID,password);
     }
-    private static final String serverName = "192.168.1.110";
+    private static final String serverName = "192.168.137.1";
     private static final String portNumber = "1433";
     private static final String dbName = "SWE102";
     private static final String userID = "sa";
